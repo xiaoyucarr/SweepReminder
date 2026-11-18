@@ -15,7 +15,7 @@ import net.minecraft.resources.Identifier;
 import java.util.regex.Pattern;
 
 public final class SweepReminderClient implements ClientModInitializer {
-    private static final long INTERVAL_MS = 20L * 60_000L + 10_000L;
+    private static final long INTERVAL_MS = 20L * 60_000L;
     private static final long WARNING_MS = 60_000L;
     private static final long ANNOUNCEMENT_DEBOUNCE_MS = 5_000L;
 
@@ -79,7 +79,7 @@ public final class SweepReminderClient implements ClientModInitializer {
                 nextSweepAt += missedIntervals * INTERVAL_MS;
                 warnedOneMinute = false;
                 client.player.displayClientMessage(Component.literal(
-                        "§c[扫地提醒] 预计扫地时间到！已开始下一轮20分10秒倒计时。"), false);
+                        "§c[扫地提醒] 预计扫地时间到！已开始下一轮20分钟倒计时。"), false);
             }
         });
 
@@ -120,7 +120,7 @@ public final class SweepReminderClient implements ClientModInitializer {
         syncedToServer = true;
         if (client.player != null) {
             client.player.displayClientMessage(Component.literal(
-                    "§a[扫地提醒] " + source + "，下一次预计20分10秒后。"), false);
+                    "§a[扫地提醒] " + source + "，下一次预计20分钟后。"), false);
         }
     }
 
