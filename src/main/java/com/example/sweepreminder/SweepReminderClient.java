@@ -15,7 +15,7 @@ import net.minecraft.resources.Identifier;
 import java.util.regex.Pattern;
 
 public final class SweepReminderClient implements ClientModInitializer {
-    private static final long INTERVAL_MS = 20L * 60_000L;
+    private static final long INTERVAL_MS = 20L * 60_000L + 10_000L;
     private static final long WARNING_MS = 60_000L;
     private static final long ANNOUNCEMENT_DEBOUNCE_MS = 5_000L;
 
@@ -61,7 +61,7 @@ public final class SweepReminderClient implements ClientModInitializer {
                 syncedToServer = false;
                 wasInWorld = true;
                 client.player.displayClientMessage(Component.literal(
-                        "§e[扫地提醒] 右上角开始估算计时；检测到服务器60秒公告会自动校准。"), false);
+                        "§e[扫地提醒] 右下角开始估算计时；检测到服务器60秒公告会自动校准。"), false);
             }
             while (SYNC.consumeClick()) {
                 // R is pressed just AFTER cleanup has completed.
@@ -79,7 +79,7 @@ public final class SweepReminderClient implements ClientModInitializer {
                 nextSweepAt += missedIntervals * INTERVAL_MS;
                 warnedOneMinute = false;
                 client.player.displayClientMessage(Component.literal(
-                        "§c[扫地提醒] 预计扫地时间到！已开始下一轮20分钟倒计时。"), false);
+                        "§c[扫地提醒] 预计扫地时间到！已开始下一轮20分10秒倒计时。"), false);
             }
         });
 
@@ -120,7 +120,7 @@ public final class SweepReminderClient implements ClientModInitializer {
         syncedToServer = true;
         if (client.player != null) {
             client.player.displayClientMessage(Component.literal(
-                    "§a[扫地提醒] " + source + "，下一次预计20分钟后。"), false);
+                    "§a[扫地提醒] " + source + "，下一次预计20分10秒后。"), false);
         }
     }
 
@@ -129,13 +129,11 @@ public final class SweepReminderClient implements ClientModInitializer {
         if (client.player == null || client.level == null || nextSweepAt < 0) return;
         long seconds = Math.max(0L, (nextSweepAt - System.currentTimeMillis() + 999L) / 1000L);
         String display = String.format("扫地倒计时 %02d:%02d", seconds / 60, seconds % 60);
-        String status = syncedToServer ? "已根据服务器提示校准" : "估算中 · 等待服务器公告";
         int color = seconds <= 60 ? 0xFFFF5555 : seconds <= 300 ? 0xFFFFCC55 : 0xFF55FF88;
-        int width = Math.max(client.font.width(display), client.font.width(status)) + 16;
+        int width = client.font.width(display);
+        // Show only the countdown text, transparent, anchored to the bottom-right.
         int x = graphics.guiWidth() - width - 8;
-        int y = 8;
-        graphics.fill(x, y, x + width, y + 33, 0xBB101010);
-        graphics.drawString(client.font, display, x + 8, y + 6, color, true);
-        graphics.drawString(client.font, status, x + 8, y + 19, 0xFFBBBBBB, false);
+        int y = graphics.guiHeight() - client.font.lineHeight - 8;
+        graphics.drawString(client.font, display, x, y, color, true);
     }
 }
