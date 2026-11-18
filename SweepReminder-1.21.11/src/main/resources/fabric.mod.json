@@ -1,0 +1,22 @@
+{
+  "schemaVersion": 1,
+  "id": "sweepreminder",
+  "version": "${version}",
+  "name": "扫地倒计时 / Sweep Reminder",
+  "description": "Client-side 20-minute item cleanup timer with right-top HUD; syncs to 60-second server cleanup announcements.",
+  "authors": [
+    "OpenAI"
+  ],
+  "environment": "client",
+  "entrypoints": {
+    "client": [
+      "com.example.sweepreminder.SweepReminderClient"
+    ]
+  },
+  "depends": {
+    "fabricloader": ">=0.18.1",
+    "minecraft": "1.21.11",
+    "java": ">=21",
+    "fabric-api": "*"
+  }
+}
